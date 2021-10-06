@@ -2,7 +2,7 @@ package agents;
 
 // Exemple de Bitxo
 
-public class Bitxo1 extends Agent
+public class Bitxo12 extends Agent
 {
     static final int PARET = 0;
     static final int BITXO   = 1;
@@ -14,7 +14,7 @@ public class Bitxo1 extends Agent
 
     Estat estat;
 
-    public Bitxo1(Agents pare) {
+    public Bitxo12(Agents pare) {
         super(pare, "Exemple1", "imatges/robotank1.gif");
     }
 
