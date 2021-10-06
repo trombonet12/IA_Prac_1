@@ -12,6 +12,7 @@ public class Bitxo1 extends Agent {
     static final int DRETA = 2;
     final double dist = 80;
     int repetir;
+    int repetirC;
 
     Estat estat;
 
@@ -27,11 +28,13 @@ public class Bitxo1 extends Agent {
 
         // Inicialització de variables que utilitzaré al meu comportament
         repetir = 0;
+        repetirC = 0;
     }
 
     private void camina() {
-        if  (estat.enCollisio==true){
+        if (estat.enCollisio == true) {
             enrere();
+            repetirC = 5;
         } else if ((estat.distanciaVisors[ESQUERRA] < dist) && (estat.objecteVisor[ESQUERRA] == PARET)) {
             dreta();
             System.out.println("dreta");
@@ -51,9 +54,32 @@ public class Bitxo1 extends Agent {
         }
     }
 
+    private void cerca() {
+        int min = Integer.MAX_VALUE;
+        int proper = -1;
+        for (int i = 0; i < estat.numObjectes; i++) {
+            if ((estat.objectes[i].agafaDistancia() < min)) {
+                //if ((estat.objectes[i].agafaTipus() == estat.id + 100) && (estat.objectes[i].agafaDistancia() < min)) {
+                min = estat.objectes[i].agafaDistancia();
+                proper = i;
+            }
+        }
+        System.out.println(repetirC);
+        if (proper != -1) {
+            if (repetirC == 0) {
+                mira(estat.objectes[proper]);
+                System.out.println("Found it");
+            } else {
+                repetirC--;
+            }
+        }
+
+    }
+
     @Override
     public void avaluaComportament() {
         estat = estatCombat();
+        cerca();
         camina();
     }
 
