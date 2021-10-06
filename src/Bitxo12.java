@@ -15,7 +15,7 @@ public class Bitxo12 extends Agent
     Estat estat;
 
     public Bitxo12(Agents pare) {
-        super(pare, "Exemple1", "imatges/robotank1.gif");
+        super(pare, "Speedy", "imatges/robotank1.gif");
     }
 
     @Override
@@ -32,6 +32,10 @@ public class Bitxo12 extends Agent
     @Override
     public void avaluaComportament()
     {
+        estat =  estatCombat();
+        if(hiHaParet(40)){
+            
+        }
         endavant();
     }
     
