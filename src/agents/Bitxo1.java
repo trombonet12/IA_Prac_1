@@ -25,6 +25,7 @@ public class Bitxo1 extends Agent {
         // atributsAgents(v,w,dv,av,ll,es,hy)
         int cost = atributsAgent(6, 5, 600, 30, 23, 5, 5);
         System.out.println("Cost total:" + cost);
+        //hola que tal
 
         // Inicialització de variables que utilitzaré al meu comportament
         repetir = 0;
