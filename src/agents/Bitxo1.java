@@ -10,9 +10,11 @@ public class Bitxo1 extends Agent {
     static final int ESQUERRA = 0;
     static final int CENTRAL = 1;
     static final int DRETA = 2;
-    final double dist = 80;
+    final double dist = 90; //camina v1 a 80
+    final double distL = 30;
     int repetir;
     int repetirC;
+    int gana; //temps sense menjar
 
     Estat estat;
 
@@ -29,6 +31,7 @@ public class Bitxo1 extends Agent {
         // Inicialització de variables que utilitzaré al meu comportament
         repetir = 0;
         repetirC = 0;
+        gana = 0;
     }
 
     private void camina() {
@@ -54,12 +57,47 @@ public class Bitxo1 extends Agent {
         }
     }
 
-    private void cerca() {
+    private void caminaV2() {
+        if ((estat.distanciaVisors[CENTRAL] < dist) && (estat.objecteVisor[CENTRAL] == PARET)) {
+            if (estat.distanciaVisors[DRETA] < estat.distanciaVisors[ESQUERRA]) {
+                gira(10);
+            } else if (estat.distanciaVisors[DRETA] > estat.distanciaVisors[ESQUERRA]) {
+                gira(350);
+            }
+        } else if ((estat.distanciaVisors[DRETA] < distL) && (estat.objecteVisor[DRETA] == PARET)) {
+            gira(5);
+        } else if ((estat.distanciaVisors[ESQUERRA] < distL) && (estat.objecteVisor[ESQUERRA] == PARET)) {
+            gira(355);
+        }
+
+        if (estat.enCollisio == true) {
+            if (repetir > 20) {
+                endavant();
+                repetir = 0;
+            } else {
+                enrere();
+                repetirC = 10;
+                repetir += 5;
+            }
+        }
+
+        System.out.println(repetir);
+        if (repetir == 0) {
+            atura();
+            endavant();
+            System.out.println("endevant");
+        } else {
+            repetir--;
+        }
+    }
+
+    private boolean cerca() {
         int min = Integer.MAX_VALUE;
         int proper = -1;
         for (int i = 0; i < estat.numObjectes; i++) {
-            if ((estat.objectes[i].agafaDistancia() < min)) {
-                //if ((estat.objectes[i].agafaTipus() == estat.id + 100) && (estat.objectes[i].agafaDistancia() < min)) {
+            //if ((estat.objectes[i].agafaDistancia() < min)) {
+            //if ((estat.objectes[i].agafaTipus() == estat.id + 100) && (estat.objectes[i].agafaDistancia() < min)) {
+            if ((estat.objectes[i].agafaTipus() != -1) && (estat.objectes[i].agafaDistancia() < min)) {
                 min = estat.objectes[i].agafaDistancia();
                 proper = i;
             }
@@ -72,15 +110,35 @@ public class Bitxo1 extends Agent {
             } else {
                 repetirC--;
             }
+            gana = 0;
+            return true;
         }
+        return false;
+    }
 
+    private boolean recoleccio() {
+        if (!cerca()) {
+            gana++;
+            System.out.println("Gana: " + gana);
+            if (gana > 30) {
+                if (gana > 39) {
+                    gana = 0;
+                }
+                atura();
+                gira(36);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void avaluaComportament() {
         estat = estatCombat();
-        cerca();
-        camina();
+        if (!recoleccio()) {
+            caminaV2();
+        }
+
     }
 
 }
