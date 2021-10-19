@@ -96,8 +96,8 @@ public class Bitxo1 extends Agent {
         int proper = -1;
         for (int i = 0; i < estat.numObjectes; i++) {
             //if ((estat.objectes[i].agafaDistancia() < min)) {
-            //if ((estat.objectes[i].agafaTipus() == estat.id + 100) && (estat.objectes[i].agafaDistancia() < min)) {
-            if ((estat.objectes[i].agafaTipus() != -1) && (estat.objectes[i].agafaDistancia() < min)) {
+            //if ((estat.objectes[i].agafaTipus() != -1) && (estat.objectes[i].agafaDistancia() < min)) {
+            if ((estat.objectes[i].agafaTipus() == (estat.id + 100)) && (estat.objectes[i].agafaDistancia() < min) && ((estat.objectes[i].agafaSector() == 2) || (estat.objectes[i].agafaSector() == 3))) {
                 min = estat.objectes[i].agafaDistancia();
                 proper = i;
             }
@@ -142,3 +142,13 @@ public class Bitxo1 extends Agent {
     }
 
 }
+
+/*
+COSES A FER
+    -Si se bloqueja envant y enrere tirar hiperespai.
+    -Sistema de recolecció d'escuts en base als que tens
+    -Sistema de destruccio d'elements enemics
+    -Sistema de combat
+        -Sistema de defensa
+        -Sistema d'atac.¡
+*/
