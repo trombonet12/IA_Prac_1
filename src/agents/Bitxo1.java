@@ -71,14 +71,17 @@ public class Bitxo1 extends Agent {
         }
 
         if (estat.enCollisio == true) {
-            if (repetir > 20) {
+            if (repetir > 40) {
+                hyperespai();
+            } else if (repetir > 20) {
                 endavant();
-                repetir = 0;
             } else {
                 enrere();
                 repetirC = 10;
                 repetir += 5;
             }
+        } else {
+            repetir = 0;
         }
 
         System.out.println(repetir);
@@ -97,9 +100,12 @@ public class Bitxo1 extends Agent {
         for (int i = 0; i < estat.numObjectes; i++) {
             //if ((estat.objectes[i].agafaDistancia() < min)) {
             //if ((estat.objectes[i].agafaTipus() != -1) && (estat.objectes[i].agafaDistancia() < min)) {
-            if ((estat.objectes[i].agafaTipus() == (estat.id + 100)) && (estat.objectes[i].agafaDistancia() < min) && ((estat.objectes[i].agafaSector() == 2) || (estat.objectes[i].agafaSector() == 3))) {
-                min = estat.objectes[i].agafaDistancia();
-                proper = i;
+            //if ((estat.objectes[i].agafaTipus() == (estat.id + 100)) && (estat.objectes[i].agafaDistancia() < min) && ((estat.objectes[i].agafaSector() == 2) || (estat.objectes[i].agafaSector() == 3))) {
+            if ((estat.objectes[i].agafaDistancia() < min) && ((estat.objectes[i].agafaSector() == 2) || (estat.objectes[i].agafaSector() == 3))) {
+                if (recursInteresant(estat.objectes[i])) {
+                    min = estat.objectes[i].agafaDistancia();
+                    proper = i;
+                }
             }
         }
         System.out.println(repetirC);
@@ -132,6 +138,24 @@ public class Bitxo1 extends Agent {
         return false;
     }
 
+    private boolean recursInteresant(Objecte objecte) {
+        if (objecte.agafaTipus() >= 100) {
+            if (objecte.agafaTipus() == (estat.id + 100)) {
+                return true;
+            } else {
+                mira(objecte);
+                llança();
+                return false;
+            }
+        } else if (objecte.agafaTipus() == Estat.ESCUT) {
+            //PROVISIONAL
+            mira(objecte);
+            llança();
+            return (estat.escuts < 3);
+        }
+        return false;
+    }
+
     @Override
     public void avaluaComportament() {
         estat = estatCombat();
@@ -146,9 +170,9 @@ public class Bitxo1 extends Agent {
 /*
 COSES A FER
     -Si se bloqueja envant y enrere tirar hiperespai.
-    -Sistema de recolecció d'escuts en base als que tens
+    -Sistema de recolecció d'escuts en base als que tens // DONE
     -Sistema de destruccio d'elements enemics
     -Sistema de combat
         -Sistema de defensa
         -Sistema d'atac.¡
-*/
+ */
