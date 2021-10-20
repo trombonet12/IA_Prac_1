@@ -1,7 +1,7 @@
 package agents;
 
 // Exemple de Bitxo
-public class Bitxo1 extends Agent {
+public class Bitxo2 extends Agent {
 
     static final int PARET = 0;
     static final int BITXO = 1;
@@ -18,14 +18,14 @@ public class Bitxo1 extends Agent {
 
     Estat estat;
 
-    public Bitxo1(Agents pare) {
+    public Bitxo2(Agents pare) {
         super(pare, "Brominator", "imatges/robotank1.gif");
     }
 
     @Override
     public void inicia() {
         // atributsAgents(v,w,dv,av,ll,es,hy)
-        int cost = atributsAgent(6 ,5, 600, 30, 23, 5, 5);
+        int cost = atributsAgent(6, 5, 600, 30, 23, 5, 5);
         System.out.println("Cost total:" + cost);
 
         // Inicialització de variables que utilitzaré al meu comportament
@@ -71,8 +71,11 @@ public class Bitxo1 extends Agent {
         }
 
         if (estat.enCollisio == true) {
-            if (repetir > 20) {
+            if (repetir > 40) {
                 hyperespai();
+                repetir = 0;
+            } else if (repetir > 20) {
+                endavant();
                 repetir = 0; //PROVISIONAL  
             } else {
                 enrere();
@@ -167,12 +170,10 @@ public class Bitxo1 extends Agent {
 
 /*
 COSES A FER
-    -Si se bloqueja envant y enrere tirar hiperespai. // REVISAR
+    -Si se bloqueja envant y enrere tirar hiperespai. 
     -Sistema de recolecció d'escuts en base als que tens // DONE
-    -Sistema de destruccio d'elements enemics // DONE
+    -Sistema de destruccio d'elements enemics
     -Sistema de combat
         -Sistema de defensa
         -Sistema d'atac.
-    -Sistema Sonar
-    -Arreglar obsesio recolectar objectes disparar
  */
