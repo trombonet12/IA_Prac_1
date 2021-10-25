@@ -25,7 +25,7 @@ public class Bitxo1 extends Agent {
     @Override
     public void inicia() {
         // atributsAgents(v,w,dv,av,ll,es,hy)
-        int cost = atributsAgent(6 ,5, 600, 30, 23, 5, 5);
+        int cost = atributsAgent(6, 5, 600, 30, 23, 5, 5);
         System.out.println("Cost total:" + cost);
 
         // Inicialització de variables que utilitzaré al meu comportament
@@ -150,13 +150,27 @@ public class Bitxo1 extends Agent {
             }
         } else if (objecte.agafaTipus() == Estat.ESCUT) {
             return (estat.escuts < 3);
+            //PROVISIONAL    
+        } else if (objecte.agafaTipus() == Estat.AGENT) {
+            if (objecte.agafaDistancia() <= 100) {
+                mira(objecte);
+                llança();
+            }
+            return false;
         }
         return false;
+    }
+
+    private void defensa() {
+        if (estat.llançamentEnemicDetectat && (estat.distanciaLlançamentEnemic < 50)) {
+            activaEscut();
+        }
     }
 
     @Override
     public void avaluaComportament() {
         estat = estatCombat();
+        defensa();
         if (!recoleccio()) {
             caminaV2();
         }

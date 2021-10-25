@@ -19,7 +19,7 @@ public class Bitxo2 extends Agent {
     Estat estat;
 
     public Bitxo2(Agents pare) {
-        super(pare, "Brominator", "imatges/robotank1.gif");
+        super(pare, "Sombra", "imatges/robotank1.gif");
     }
 
     @Override
@@ -35,29 +35,6 @@ public class Bitxo2 extends Agent {
     }
 
     private void camina() {
-        if (estat.enCollisio == true) {
-            enrere();
-            repetirC = 5;
-        } else if ((estat.distanciaVisors[ESQUERRA] < dist) && (estat.objecteVisor[ESQUERRA] == PARET)) {
-            dreta();
-            System.out.println("dreta");
-            repetir = 2;
-        } else if ((estat.distanciaVisors[DRETA] < dist) && (estat.objecteVisor[DRETA] == PARET)) {
-            esquerra();
-            System.out.println("esquerra");
-            repetir = 2;
-        }
-        System.out.println(repetir);
-        if (repetir == 0) {
-            atura();
-            endavant();
-            System.out.println("endevant");
-        } else {
-            repetir--;
-        }
-    }
-
-    private void caminaV2() {
         if ((estat.distanciaVisors[CENTRAL] < dist) && (estat.objecteVisor[CENTRAL] == PARET)) {
             if (estat.distanciaVisors[DRETA] < estat.distanciaVisors[ESQUERRA]) {
                 gira(10);
@@ -153,15 +130,29 @@ public class Bitxo2 extends Agent {
             }
         } else if (objecte.agafaTipus() == Estat.ESCUT) {
             return (estat.escuts < 3);
+            //PROVISIONAL    
+        } else if (objecte.agafaTipus() == Estat.AGENT) {
+            if (objecte.agafaDistancia() <= 100) {
+                    mira(objecte);
+                    llança();
+                }
+            return false;
         }
         return false;
+    }
+
+    private void defensa() {
+        if (estat.llançamentEnemicDetectat && (estat.distanciaLlançamentEnemic < 50)) {
+            activaEscut();
+        }
     }
 
     @Override
     public void avaluaComportament() {
         estat = estatCombat();
+        defensa();
         if (!recoleccio()) {
-            caminaV2();
+            camina();
         }
 
     }
