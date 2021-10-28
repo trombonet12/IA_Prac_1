@@ -15,49 +15,28 @@ public class Bitxo1 extends Agent {
     int repetir;
     int repetirC;
     int gana; //temps sense menjar
+    int recarrega; //temps entre dispars
 
     Estat estat;
 
     public Bitxo1(Agents pare) {
-        super(pare, "Brominator", "imatges/robotank1.gif");
+        super(pare, "Typhoon", "imatges/robotank1.gif");
     }
 
     @Override
     public void inicia() {
         // atributsAgents(v,w,dv,av,ll,es,hy)
-        int cost = atributsAgent(6, 5, 600, 30, 23, 5, 5);
+        int cost = atributsAgent(6, 5, 700, 30, 23, 5, 2);
         System.out.println("Cost total:" + cost);
 
         // Inicialització de variables que utilitzaré al meu comportament
         repetir = 0;
         repetirC = 0;
         gana = 0;
+        recarrega = 0;
     }
 
     private void camina() {
-        if (estat.enCollisio == true) {
-            enrere();
-            repetirC = 5;
-        } else if ((estat.distanciaVisors[ESQUERRA] < dist) && (estat.objecteVisor[ESQUERRA] == PARET)) {
-            dreta();
-            System.out.println("dreta");
-            repetir = 2;
-        } else if ((estat.distanciaVisors[DRETA] < dist) && (estat.objecteVisor[DRETA] == PARET)) {
-            esquerra();
-            System.out.println("esquerra");
-            repetir = 2;
-        }
-        System.out.println(repetir);
-        if (repetir == 0) {
-            atura();
-            endavant();
-            System.out.println("endevant");
-        } else {
-            repetir--;
-        }
-    }
-
-    private void caminaV2() {
         if ((estat.distanciaVisors[CENTRAL] < dist) && (estat.objecteVisor[CENTRAL] == PARET)) {
             if (estat.distanciaVisors[DRETA] < estat.distanciaVisors[ESQUERRA]) {
                 gira(10);
@@ -73,7 +52,7 @@ public class Bitxo1 extends Agent {
         if (estat.enCollisio == true) {
             if (repetir > 20) {
                 hyperespai();
-                repetir = 0; //PROVISIONAL  
+                repetir = 0;
             } else {
                 enrere();
                 repetirC = 10;
@@ -95,9 +74,6 @@ public class Bitxo1 extends Agent {
         int min = Integer.MAX_VALUE;
         int proper = -1;
         for (int i = 0; i < estat.numObjectes; i++) {
-            //if ((estat.objectes[i].agafaDistancia() < min)) {
-            //if ((estat.objectes[i].agafaTipus() != -1) && (estat.objectes[i].agafaDistancia() < min)) {
-            //if ((estat.objectes[i].agafaTipus() == (estat.id + 100)) && (estat.objectes[i].agafaDistancia() < min) && ((estat.objectes[i].agafaSector() == 2) || (estat.objectes[i].agafaSector() == 3))) {
             if (((estat.objectes[i].agafaSector() == 2) || (estat.objectes[i].agafaSector() == 3))) {
                 if (recursInteresant(estat.objectes[i])) {
                     if (estat.objectes[i].agafaDistancia() < min) {
@@ -142,28 +118,45 @@ public class Bitxo1 extends Agent {
             if (objecte.agafaTipus() == (estat.id + 100)) {
                 return true;
             } else {
-                if (objecte.agafaDistancia() <= 400) {
-                    mira(objecte);
-                    llança();
-                }
+                atac(objecte);
                 return false;
             }
         } else if (objecte.agafaTipus() == Estat.ESCUT) {
             return (estat.escuts < 3);
-            //PROVISIONAL    
         } else if (objecte.agafaTipus() == Estat.AGENT) {
-            if (objecte.agafaDistancia() <= 100) {
-                mira(objecte);
-                llança();
-            }
+            atac(objecte);
             return false;
         }
         return false;
     }
 
     private void defensa() {
-        if (estat.llançamentEnemicDetectat && (estat.distanciaLlançamentEnemic < 50)) {
-            activaEscut();
+        if (estat.llançamentEnemicDetectat && (estat.distanciaLlançamentEnemic < 50) && (!estat.escutActivat)) {
+            if (estat.escuts > 0) {
+                activaEscut();
+            } else {
+                hyperespai();
+            }
+        }
+    }
+
+    private void atac(Objecte enemic) {
+        if (recarrega <= 0) {
+            if (enemic.agafaTipus() >= 100) {
+                if (enemic.agafaDistancia() <= 400) {
+                    mira(enemic);
+                    llança();
+                    recarrega = 20;
+                }
+            } else {
+                if (estat.recursosAgafats > 3) {
+                    mira(enemic);
+                    if (enemic.agafaDistancia() <= 400) {
+                        llança();
+                    }
+                    recarrega = 20;
+                }
+            }
         }
     }
 
@@ -172,21 +165,20 @@ public class Bitxo1 extends Agent {
         estat = estatCombat();
         defensa();
         if (!recoleccio()) {
-            caminaV2();
+            camina();
         }
-
+        recarrega--;
     }
 
 }
 
 /*
 COSES A FER
-    -Si se bloqueja envant y enrere tirar hiperespai. // REVISAR
-    -Sistema de recolecció d'escuts en base als que tens // DONE
-    -Sistema de destruccio d'elements enemics // DONE
-    -Sistema de combat
-        -Sistema de defensa
-        -Sistema d'atac.
-    -Sistema Sonar
-    -Arreglar obsesio recolectar objectes disparar
+    -Si se bloqueja envant y enrere tirar hiperespai. // DONE
+    -Sistema de combat // DONE
+        -Sistema d'atac. // DONE 
+    -Sistema Sonar // NOPE
+    -Arreglar obsesio recolectar objectes disparar // DONE 
+    -Detectar escuts enemics // NO POSIBLE
+    -Controlar cadencia de tir // DONE 
  */
